@@ -340,6 +340,17 @@ main (int argc, char *argv[])
     GError *error;
     int i;
 
+    openlog ("caja", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
+    syslog(LOG_INFO, "Caja instance started");
+    if (argv != NULL)
+    {            
+        for (i=0; argv[i] != NULL; i++)
+        {
+            syslog(LOG_INFO, "Argument given: '%s'", argv[i]);
+        }
+    }           
+    closelog ();
+
     const GOptionEntry options[] =
     {
 #ifndef CAJA_OMIT_SELF_CHECK
