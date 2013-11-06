@@ -62,6 +62,8 @@
 	#include <exempi/xmp.h>
 #endif
 
+#include <syslog.h>
+
 /* Keeps track of everyone who wants the main event loop kept active */
 static GSList* event_loop_registrants;
 
@@ -464,6 +466,20 @@ main (int argc, char *argv[])
     {
         no_default_window = TRUE;
         no_desktop = FALSE;
+    }
+
+    if (no_default_window) {
+        openlog ("caja", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
+        syslog(LOG_INFO, "Starting caja with -n option, ignoring any remaining arguments...");
+        if (remaining != NULL)
+        {            
+            for (i=0; remaining[i] != NULL; i++)
+            {
+                syslog(LOG_INFO, "Ignoring argument: '%s'", remaining[i]);
+            }
+        }        
+        remaining = NULL;
+        closelog ();
     }
 
     if (perform_self_check && remaining != NULL)
